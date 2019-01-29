@@ -2,9 +2,20 @@
 <html lang="kr">
 <head>
     <meta charset="UTF-8">
-    <title>http://www.blueb.co.kr</title>
-    <script>
+    <title>다운로드 페이지</title>
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script  language="JavaScript" type="text/javascript"  src="js/jquery-3.2.1.js"></script>
+    <script src="js/myscript.js"></script>
+    <script>if (window.module) module = window.module;</script>
 
+    <script>
+    $(document).ready(function () {
+               var val = location.href.substr(
+                   location.href.lastIndexOf('=') + 1
+               );
+               document.getElementById("down_name").innerHTML = val;
+
+           });
     </script>
 
     <style>
@@ -66,6 +77,9 @@
             height: 200px;
             border: 1px solid blue;
         }
+        #down_name{
+          display: inline;
+        }
     </style>
 </head>
 <body>
@@ -86,9 +100,10 @@
             </li>
         </ul>
     </div>
-    <div class="down">
+    <div id="down_name">
 
-    </div>
+    </div>님 로그인 하셨습니다.
+    <button><a href="index.html">로그아웃</a></button>
 </div>
 
 </body>

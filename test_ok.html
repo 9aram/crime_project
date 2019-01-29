@@ -1,0 +1,159 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>파일 다운로드</title>
+</head>
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script  language="JavaScript" type="text/javascript"  src="js/jquery-3.2.1.js"></script>
+<script src="js/myscript.js"></script>
+<script>if (window.module) module = window.module;</script>
+<script type="text/javascript">
+window.onload=function(){
+  $(document).ready(function () {
+    showOk();
+             var val = location.href.substr(
+                 location.href.lastIndexOf('=') + 1
+             );
+             document.getElementById("down_name").innerHTML = val;
+
+         });
+
+
+var progressBar = document.getElementById("progress"),
+  loadBtn = document.getElementById("button"),
+  display = document.getElementById("display");
+
+  function download(data) {
+           var xhr = new XMLHttpRequest();
+          // xhr.open("GET", 'http://localhost:8090/curriculum1.4/login_controller.jspx?cmd=downloadFile&bFile=' + id, true);
+
+           xhr.open("GET", 'crime_project-master.zip', true);
+           xhr.responseType = "blob";
+          // xhr.open("GET", "https://zinoui.com/demo/progress-bar/test.csv?" + Math.floor(Math.random() * 99999), true);
+           //xhr.responseType = "text";
+           xhr.onreadystatechange = function (aEvt) {
+
+                   xhr.onprogress = function(e) {
+                       if (e.lengthComputable) {
+                           progressBar.max = e.total;
+                           progressBar.value = e.loaded;
+                           display.innerText = Math.floor((e.loaded / e.total) * 100) + '%';
+                       }
+                   };
+                   xhr.onloadstart = function(e) {
+                       progressBar.value = 0;
+                       display.innerText = '0%';
+                   };
+                   xhr.onloadend = function(e) {
+                       progressBar.value = e.loaded;
+                       loadBtn.disabled = false;
+                       loadBtn.innerHTML = 'Start downloading';
+                   };
+
+           };
+
+           xhr.send(null);
+       }
+       function buildFormData() {
+                   var fd = new FormData();
+
+                   for (var i = 0; i < 3000; i += 1) {
+                       fd.append('data[]', Math.floor(Math.random() * 999999));
+                   }
+
+                   return fd;
+               }
+
+               loadBtn.addEventListener("click", function(e) {
+                   this.disabled = true;
+                   this.innerHTML = "downloading...";
+                   download(buildFormData());
+               });
+
+
+}
+</script>
+    <style>
+
+        .down{
+            width: 800px;
+            height: 50px;
+            border: 1px solid blue;
+        }
+        body { background: #fff; }
+        .blueone {
+            border-collapse: collapse;
+        }
+        .blueone th {
+            padding: 10px;
+            color: #168;
+            border-bottom: 3px solid #168;
+            text-align: left;
+        }
+        .blueone td {
+            color: #669;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .blueone tr:hover td {
+            color: #004;
+        }
+    </style>
+<body>
+  <div id="down_name">
+
+  </div>님 로그인 하셨습니다.
+  <div class="wrap">
+      <div class="top">
+          <button onclick="showOk();">다운로드</button>
+          <!-- <ul>
+              <li><input type="checkbox" id="a2" name="전체동의"/>
+                  <label for="a2"><span>이용약관동의 (필수)</span></label>
+              </li>
+
+              <li><input type="checkbox" id="a3" name="전체동의"/>
+                  <label for="a3"><span>개인정보수집이용 동의 (필수)</span></label>
+              </li>
+
+              <li><input type="checkbox" id="a4" name="전체동의"/>
+                  <label for="a4"><span>만 14세 이상 확인 (필수)</span></label>
+              </li>
+          </ul> -->
+      </div>
+<div id="fileList">
+  <ul id="fileList">
+
+  </ul>
+</div>
+  </div>
+  <table width="500" cellpadding="0" cellspacing="0" border="1" class="blueone">
+
+      <tr><th><input type="checkbox" id="a1" name="전체동의"/></th><th >파일명</th><th><a onclick="downloadClick()">첨부파일</a></th></tr>
+      <tr><td><input type="checkbox" id="a2" name="전체동의"/></td><td id="fileList0" class="selected"></td><td><a class="checkBtn" onclick="downloadClick(event, fileList0)">다운로드</a></td></tr>
+      <tr><td><input type="checkbox" id="a3" name="전체동의"/></td><td id="fileList1"></td><td><a class="checkBtn" onclick="downloadClick(event, fileList1)">다운로드</a></td></tr>
+      <tr><td><input type="checkbox" id="a4" name="전체동의"/></td><td id="fileList2"></td><td><a class="checkBtn" onclick="downloadClick(event, fileList2)">다운로드</a></td></tr>
+      <tr><td><input type="checkbox" id="a5" name="전체동의"/></td><td id="fileList3"></td><td><a class="checkBtn" onclick="downloadClick(event, fileList3)">다운로드</a></td></tr>
+      <tr><td><input type="checkbox" id="a5" name="전체동의"/></td><td id="fileList4"></td><td><a class="checkBtn" onclick="downloadClick(event, fileList4)">다운로드</a></td></tr>
+      <tr><td><input type="checkbox" id="a5" name="전체동의"/></td><td id="fileList5"></td><td><a class="checkBtn" onclick="downloadClick(event, fileList5)">다운로드</a></td></tr>
+      <tr><td><input type="checkbox" id="a5" name="전체동의"/></td><td id="fileList6"></td><td><a class="checkBtn" onclick="downloadClick(event, fileList6)">다운로드</a></td></tr>
+      <tr><td><input type="checkbox" id="a5" name="전체동의"/></td><td id="fileList7"></td><td><a class="checkBtn" onclick="downloadClick(event, fileList7)">다운로드</a></td></tr>
+      <tr>
+          <td>파일</td>
+          <td> <a href = "controller.jspx?cmd=downloadFile&bFile=bullet01.png" >bullet01.png</a> </td>
+          <td> <a href = "controller.jspx?cmd=downloadFile&bFile=bullet01.png" >bullet01.png</a> </td>
+
+      </tr>
+
+  </table>
+  <progress id="progress" value="0"></progress>
+  <button id="button">Start uploading</button>
+  <span id="display"></span>
+
+  <div class="col-lg-12" id="ex2_Result1" ></div>
+  		<div class="col-lg-12" id="ex2_Result2" ></div>
+  <!-- <input type="button" value="버튼" class="signUpButton"  onclick="showOk()" > -->
+
+</body>
+</html>

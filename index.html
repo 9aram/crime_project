@@ -14,7 +14,7 @@
     body {
         font: 13px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
         color: #333333;
-        background: #596778;
+
     }
 
     .signUp {
@@ -66,12 +66,9 @@
         left: 0;
         right: 0;
         height: 8px;
-        background: #C4E17F;
+        background: #0071c3c7;
         border-radius: 5px 5px 0 0;
-        background-image: -webkit-linear-gradient(left, #C4E17F, #C4E17F 12.5%, #F7FDCA 12.5%, #F7FDCA 25%, #FECF71 25%, #FECF71 37.5%, #F0776C 37.5%, #F0776C 50%, #DB9DBE 50%, #db9CBE 62.5%, #C49CDE 62.5%, #C49CDE 75%, #669AE1 75%, #669AE1 87.5%, #62C2E4 87.5%, #62C2E4);
-        background-image: -moz-linear-gradient(left, #c4e17f, #C4E17F 12.5%, #F7FDCA 12.5%, #F7FDCA 25%, #FECF71 25%, #FECF71 37.5%, #F0776C 37.5%, #F0776C 50%, #DB9DBE 50%, #DB9CBE 62.5%, #C49CDE 62.5%, #C49CDE 75%, #669AE1 75%, #669AE1 87.5%, #62C2E4 87.5%, #62C2E4);
-        background-image: -o-linear-gradient(left, #C4E17F, #C4E17F 12.5%, #F7FDCC 12.5%, #F7FDCA 25%, #FECF71 25%, #FECF71 37.5%, #F0776C 37.5%, #F0776C 50%, #DB9DBE 50%, #DB9DBE 62.5%, #C49CDE 62.5%, #C49CDE 75%, #669AE1 75%, #669AE1 87.5%, #62C2E4 87.5%, #62C2E4);
-        background-image: linear-gradient(to right, #C4E17F, #C4E17F 12.5%, #F7FDCA 12.5%, #F7FDCA 25%, #FECF71 25%, #FECF71 37.5%, #F0776C 37.5%, #F0776C 50%, #DB9DBE 50%, #DB9CBE 62.5%, #c49cde 62.5%, #C49CDE 75%, #669AE1 75%, #669AE1 87.5%, #62c2e4 87.5%, #62C2E4);
+
     }
 
     input {
@@ -107,6 +104,7 @@
     }
 
     .signUpButton {
+          margin-bottom: 3px;
         position: relative;
         vertical-align: top;
         width: 100%;
@@ -116,13 +114,13 @@
         color: white;
         text-align: center;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-        background: #F0776C;
+        background: #026ebda6;
         border: 0;
-        border-bottom: 2px solid #D76B60;
+        /* border-bottom: 2px solid #D76B60; */
         border-radius: 5px;
         cursor: pointer;
-        -webkit-box-shadow: inset 0 -2px #D76B60;
-        box-shadow: inset 0 -2px #D76B60;
+        /* -webkit-box-shadow: inset 0 -2px #D76B60; */
+        /* box-shadow: inset 0 -2px #D76B60; */
     }
 
     .signUpButton:active {
@@ -156,7 +154,7 @@
     <h1 class="signUpTitle">로그인페이지</h1>
     <input type="text"  name="id" id="id" class="signUpInput" placeholder="Enter your ID" autofocus required>
     <input type="password"  name="pw" id="password" class="signUpInput" placeholder="Enter your password" required>
-    <input type="button" value="로그인!" class="signUpButton"  onclick="loginConfirm()" />
+    <input type="button" value="로그인!" class="signUpButton"  onclick="loginConfirm2()" />
     <input type="button" value="회원가입!" class="signUpButton"  onclick="join()" />
 
 </form>

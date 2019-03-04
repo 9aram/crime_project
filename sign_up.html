@@ -4,12 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <title>garam</title>
+
   <script>
     if (typeof module === 'object') {
       window.module = module;
       module = undefined;
     }
   </script>
+  
   <script language="JavaScript" type="text/javascript" src="js/jquery-3.2.1.js"></script>
   <script src="js/myscript.js"></script>
   <script src="js/distribute.js"></script>
@@ -458,6 +460,7 @@ footer:hover {
     <h1>회원가입페이지</h1>
     <input type="text" name="id" id="id" placeholder="Enter your ID" autofocus required>
     <input type="password" name="pw" id="password" placeholder="Enter your password" required>
+    <input type="password" name="pw" id="password" placeholder="Enter again your password to make sure" required>
     <input type="button" value="Sign up!" onclick="insultMember2()" class="signup_btn">
     <a href="index.html">되돌아가기</a>
   </form>

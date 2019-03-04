@@ -272,12 +272,12 @@ $(".pauseBtn5").click(function() {
         <td id="500mb.bin">File500MB</td>
         <td><progress id="progress" value="0"></progress><span id="display"></span></td>
         <td class="test"><a class="checkBtn checkBtn3" onclick="downloadFile4(event)">다운로드</a></td>
-        <td><a class="pauseBtn pauseBtn3" onclick="stop(3);" value="ACTION">일시정지</a><a class="resumeBtn resumeBtn3" onclick="resume(3);" value="ACTION">다시시작</a></td>
+        <td><a class="pauseBtn pauseBtn3" onclick="(new downloadFile4()).stop();" value="ACTION">일시정지</a><a class="resumeBtn resumeBtn3" onclick=" (new downloadFile4()).stop();" value="ACTION">다시시작</a></td>
       </tr>
       <tr>
         <td id="1000mb.bin">File1GB</td>
         <td><progress id="progress" value="0"></progress><span id="display"></span></td>
-        <td class="test"><a class="checkBtn checkBtn4" onclick="downloadFile(event)">다운로드</a></td>
+        <td class="test"><a class="checkBtn checkBtn4" onclick="downloadFile5(event)">다운로드</a></td>
         <td><a class="pauseBtn pauseBtn4" onclick="stop(4);" value="ACTION">일시정지</a><a class="resumeBtn resumeBtn4" onclick="resume(4);" value="ACTION">다시시작</a></td>
       </tr>
 

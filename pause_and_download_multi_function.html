@@ -1,0 +1,563 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>파일 다운로드</title>
+</head>
+<script>
+  if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+  }
+</script>
+
+<script language="JavaScript" type="text/javascript" src="js/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="js/jszip-utils.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+<!-- <script src="js/myscript.js"></script> -->
+<script src="js/pause_and_download_multi_function.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script>
+  if (window.module) module = window.module;
+</script>
+<script type="text/javascript">
+  window.onload = function() {
+    $(document).ready(function() {
+      var received_bytes_zip = 0,
+        total_bytes_zip = 0;
+        var progressBar = document.querySelector("#progress33");
+          var sub=0;
+          var compress_percent=0;
+      var JSZip = require("jszip");
+      var oneClick = true;
+      //pause() 호출
+      $('#btn-pause1, #btn-pause2, #btn-pause3, #btn-pause4, #btn-pause5').click(function(e) {
+        console.log('pause function called');
+        req.pause();
+      });
+      // $('#btn-pause2').click(function(e) {
+      //   console.log('pause function called');
+      //   req.pause();
+      // });
+      // $('#btn-pause3').click(function(e) {
+      //   console.log('pause function called');
+      //   req.pause();
+      // });
+      // $('#btn-pause4').click(function(e) {
+      //   console.log('pause function called');
+      //   req.pause();
+      // });
+      // $('#btn-pause5').click(function(e) {
+      //   console.log('pause function called');
+      //   req.pause();
+      // });
+      //  showOk();
+      // 유저명
+      var val = location.href.substr(
+        location.href.lastIndexOf('=') + 1
+      );
+      //console.log(val);
+      document.getElementById("down_name").innerHTML = val;
+      document.getElementById("down_name").style.fontWeight = "bold";
+      // 일시정지/다운로드 버튼 하나만 보일수 있도록
+      $(".pauseBtn").show();
+      $(".resumeBtn").hide();
+
+      $(".pauseBtn1").click(function() {
+        $(".resumeBtn1").show();
+        $(this).hide();
+      });
+      $(".resumeBtn1").click(function() {
+        $(".pauseBtn1").show();
+        $(this).hide();
+      });
+      $(".pauseBtn2").click(function() {
+        $(".resumeBtn2").show();
+        $(this).hide();
+      });
+      $(".resumeBtn2").click(function() {
+        $(".pauseBtn2").show();
+        $(this).hide();
+      });
+      $(".pauseBtn3").click(function() {
+        $(".resumeBtn3").show();
+        $(this).hide();
+      });
+      $(".resumeBtn3").click(function() {
+        $(".pauseBtn3").show();
+        $(this).hide();
+      });
+      $(".pauseBtn4").click(function() {
+        $(".resumeBtn4").show();
+        $(this).hide();
+      });
+      $(".resumeBtn4").click(function() {
+        $(".pauseBtn4").show();
+        $(this).hide();
+      });
+      $(".pauseBtn5").click(function() {
+        $(".resumeBtn5").show();
+        $(this).hide();
+      });
+      $(".resumeBtn5").click(function() {
+        $(".pauseBtn5").show();
+        $(this).hide();
+      });
+        //---------------------------압축시 메세지 ---------------------------------------
+      /**
+       * Reset the message.메세지 초기화
+       */
+      function resetMessage() {
+        $("#result")
+          .removeClass()
+          .text("");
+      }
+      /**
+       * show a successful message. 성공메세지
+       * @param {String} text the text to show.
+       */
+      function showMessage(text) {
+        resetMessage();
+        $("#result")
+          .addClass("alert alert-success")
+          .text(text);
+      }
+      /**
+       * show an error message. 애러메세지
+       * @param {String} text the text to show.
+       */
+      function showError(text) {
+        resetMessage();
+        $("#result")
+          .addClass("alert alert-danger")
+          .text(text);
+      }
+      /**
+       * Update the progress bar. 프로그래스바 업데이트
+       * @param {Integer} percent the current percent
+       */
+      function updatePercent(percent) {
+        $("#progress_bar").removeClass("hide")
+          .find(".progress-bar")
+          .attr("aria-valuenow", percent)
+          .css({
+            width: percent + "%"
+          });
+      }
+      if (!JSZip.support.blob) {
+        showError("This demo works only with a recent browser !");
+        return;
+      }
+      //---------------------------압축 다운로드 시작----------------------------------------
+      var Promise = window.Promise;
+      if (!Promise) {
+        Promise = JSZip.external.Promise;
+      }
+      /**
+       * Fetch the content and return the associated promise.
+       * @param {String} url the url of the content to fetch.
+       * @return {Promise} the promise containing the data.
+       */
+      function urlToPromise(url) {
+        return new Promise(function(resolve, reject) {
+          JSZipUtils.getBinaryContent(url, function(err, data) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(data);
+            }
+          });
+        });
+      }
+
+      //프로그래스바 표현
+      function updateprocess(val){
+
+        //$("#progress33").attr("aria-valuemax",sub);
+        compress_percent=  Math.round((  progressBar.value /sub) * 1000) / 10 ;
+        console.log(compress_percent);
+        $("#progress_bar").removeClass("hide")
+           .find(".progress-bar")
+           .attr("aria-valuenow", compress_percent)
+           .css({
+               width : compress_percent + "%"
+           });
+        $("#progress33").attr("value",val);
+
+        progressBar.value=val
+      //  console.log( "저장된 값은 "+$("#progress33").attr("value") );
+      //  console.log(progressBar);
+      //  console.log("함수로 저장된 값은"+progressBar.value);
+    //   console.log(val);
+        progressBar.max=sub;
+      //  console.log("프로그래스바에 저장된 최고값은"+progressBar.max);
+      //  progressBar.value=0;
+          //console.log(metadata);
+        progressBar.value=val.toFixed(2);
+      //  console.log(progressBar.value);
+        received_bytes_zip += val;
+        progressBar.value = received_bytes_zip;
+        //display.innerText = Math.round((progressBar.value / progressBar.max) * 1000) / 10 + '%';
+        // console.log("퍼센트는?"+compress_percent)
+
+      }
+
+      var $form = $("#download_form").on("submit", function() {
+
+
+        resetMessage();
+
+        var zip = new JSZip();
+
+        // find every checked item
+        $(this).find(":checked").each(function() {
+          var $this = $(this);
+          var url = $this.data("url");
+          console.log(url);
+          var filename = url.replace(/.*\//g, "");
+          console.log(filename);
+
+          //파일 크기 가져오기
+          var req = $.ajax({
+            type: "HEAD",
+            url: url,
+            success: function () {
+              console.log(req.getResponseHeader("Content-Length") );
+              sub+=parseInt(req.getResponseHeader("Content-Length"))
+              sub=parseInt(sub);
+              console.log("전체크기는?"+sub);
+              }
+          });
+
+          zip.file(filename, urlToPromise(url), {binary: true, createFolders: true});
+        });
+
+        // when everything has been downloaded, we can trigger the dl
+        // by streamFiles:true
+        // zip.generateAsync({type: "blob", streamFiles:true}, function updateCallback(metadata) {
+        //    console.log(metadata.percent);
+        //     updateprocess(metadata.percent);
+        //     var msg = "progression : " + metadata.percent.toFixed(2) + " %";
+        //     if (metadata.currentFile) {
+        //       msg += ", current file = " + metadata.currentFile;
+        //     }
+        //     showMessage(msg);
+        //     updatePercent(metadata.percent | 0);
+        //   })
+        //   .then(function callback(blob) {
+        //     // see FileSaver.js
+        //     saveAs(blob, "test.zip");
+        //     showMessage("done !");
+        //   }, function(e) {  showError(e);
+        //   });
+
+          zip
+          .generateNodeStream({streamFiles:true})
+          .pipe(fs.createWriteStream('./download/img.zip'))
+          .on('finish', function () {
+              // JSZip generates a readable stream with a "end" event,
+              // but is piped here in a writable stream which emits a "finish" event.
+              console.log("out.zip written.");
+          });
+          zip
+          .generateNodeStream({streamFiles:true})
+          .on('data', function(chunk){
+          //  console.log(chunk.length);
+                updateprocess(chunk.length);
+          })
+
+
+
+        return false;
+      });
+
+    });
+  }
+
+  // $(".checkBtn1").click(function() {
+  //             $( ".checkBtn1").removeAttr( 'onClick' );
+  //        });
+</script>
+
+<style>
+
+  progress {
+  display: block; /* default: inline-block */
+  border: 0 none;
+  background: #F0F0F0;
+  border-radius: 14px;
+  box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,0.2);
+  }
+  progress::-moz-progress-bar {
+  border-radius: 12px;
+  background: #FFF;
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.4), 0 2px 5px 0px rgba(0,0,0,0.3);
+
+  }
+  /* webkit */
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+  progress {
+    height: 25px;
+  }
+  }
+  progress::-webkit-progress-bar {
+    background: transparent;
+  }
+  progress::-webkit-progress-value {
+  border-radius: 12px;
+  background: #007bff;;
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.4), 0 2px 5px 0px rgba(0,0,0,0.3);
+  }
+
+  a {
+  color: white;
+  }
+  .checkBtn:hover{
+    background: #60a3bd;
+    color:white;
+    font-weight: bold
+    text-decoration: none;
+  }
+
+  a:not([href]):not([tabindex]) {
+  color: white;
+  }
+  a:not([href]):not([tabindex]):hover {
+        color:white;
+  }
+  .pauseBtn:hover{
+    background:#ff000091;
+  }
+  .resumeBtn:hover{
+    background:rgba(230, 209, 47, 0.79);
+  }
+  .wrap {
+    color: #168;
+    margin: 50px auto;
+    width: 650px;
+    padding: 33px 25px 29px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #C4C4C4;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+  }
+
+  .down {
+    width: 800px;
+    height: 50px;
+    border: 1px solid blue;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .blueone {
+    border: #ddd;
+    border-collapse: collapse;
+    width: 600px;
+  }
+
+  .blueone th {
+    padding: 10px;
+    color: #168;
+    border-bottom: 3px solid #168;
+    text-align: center;
+  }
+
+  .blueone td {
+    text-align: center;
+    color: #168;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .blueone tr:hover td {
+    color: #004;
+  }
+
+  .wrap_id {
+    padding-bottom: 15px;
+    float: right;
+  }
+
+  .down_name {
+    font-weight: bold;
+  }
+
+  tr td:first-child {
+    width: 120px;
+    HEIGHT: 40PX;
+  }
+
+  tr td:nth-child(2) {
+    width: 220px;
+  }
+
+  tr td:nth-child(3) {
+    width: 80px;
+  }
+
+  tr td:nth-child(4) {
+    width: 70px;
+  }
+
+  tr td:nth-child(5) {
+    width: 64px;
+  }
+
+  .checkBtn {
+    background: #168;
+    font-size: 62.5%;
+    padding: 2em;
+    color: white;
+    border-radius: 5px;
+    background: #168;
+    font-size: 62.5%;
+    padding: 1em;
+    width: 50px;
+    height: 20px;
+  }
+
+  button,
+  button::after {
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+
+  button {
+    background: none;
+    border: 3px solid #red;
+    border-radius: 5px;
+    color: #red;
+    display: block;
+    font-size: 1.6em;
+    font-weight: bold;
+    margin: 1em auto;
+    padding: 2em 6em;
+    position: relative;
+    text-transform: uppercase;
+  }
+
+
+  button:hover {
+    color: #white;
+  }
+  a {
+    color: inherit;
+
+  }
+  .logout {
+    color: #fa5647;
+    text-decoration: none;
+  }
+
+  #progress {
+    float: left;
+    width: 180px;
+  }
+
+  #display {
+    float: left;
+    width: 50px;
+  }
+
+  .pauseBtn {
+    font-size: 62.5%;
+    padding: 2em;
+    color: white;
+    border-radius: 5px;
+    background: red;
+    font-size: 62.5%;
+    padding: 1em;
+    width: 50px;
+    height: 20px;
+  }
+
+  .resumeBtn {
+    font-size: 62.5%;
+    padding: 2em;
+    color: white;
+    border-radius: 5px;
+    background: rgb(230, 189, 47);
+    font-size: 62.5%;
+    padding: 1em;
+    width: 50px;
+    height: 20px;
+  }
+</style>
+
+<body>
+  <div class="wrap">
+    <div class="wrap_id">
+      <span id="down_name">
+      </span>님 로그인 하셨습니다.
+      <a href="./index.html" class="logout">로그아웃</a>
+    </div>
+    <form action="#" id="download_form">
+      <table width="500" cellpadding="0" cellspacing="0" border="1" class="blueone">
+        <tr>
+          <th>파일명</th>
+          <th>진행상황</th>
+          <th>다운로드</th>
+          <th>일시정지</th>
+        </tr>
+        <tr>
+          <td id="10Mb.dat"> <input type="checkbox" data-url="https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73751/world.topo.bathy.200407.3x21600x10800.jpg" />File10MB</td>
+          <td><progress id="progress" value="0"></progress><span id="display"></span></td>
+          <td class="test"><a class="checkBtn checkBtn1" id="checkBtn1" onclick="download_file(event, '10Mb.dat')">다운로드</a></td>
+          <td class="pauseName"><a class="pauseBtn pauseBtn1" id="btn-pause1" value="ACTION">일시정지</a><a class="resumeBtn resumeBtn1" onclick="restart_test();" value="ACTION">다시시작</a></td>
+          <!-- <button id="btn-pause">멈춤</button></td>
+        <button id="btn-resume">다시 다운로드</button></td> -->
+        </tr>
+        <tr>
+          <td id="100mb.bin"> <input type="checkbox" data-url="http://speedtest-ny.turnkeyinternet.net/100mb.bin" />File100MB</td>
+          <td><progress id="progress" value="0"></progress><span id="display"></span></td>
+          <td class="test"><a class="checkBtn checkBtn2" id="checkBtn2" onclick="download_file(event, '100mb.bin')">다운로드</a></td>
+          <td class="pauseName"><a class="pauseBtn pauseBtn2" id="btn-pause2" value="ACTION">일시정지</a><a class="resumeBtn resumeBtn2" onclick="restart_test();" value="ACTION">다시시작</a></td>
+          <!-- <button id="btn-pause">멈춤</button></td>
+        <button id="btn-resume">다시 다운로드</button></td> -->
+        </tr>
+        <tr>
+          <td id="500MB.test"> <input type="checkbox" data-url="http://nl.altushost.com/500MB.test" />File500MB</td>
+          <td><progress id="progress" value="0"></progress><span id="display"></span></td>
+          <td class="test"><a class="checkBtn checkBtn3" id="checkBtn3" onclick="download_file(event, '500MB.test')">다운로드</a></td>
+          <td class="pauseName"><a class="pauseBtn pauseBtn3" id="btn-pause3" value="ACTION">일시정지</a><a class="resumeBtn resumeBtn3" onclick=" restart_test();" value="ACTION">다시시작</a></td>
+        </tr>
+        <tr>
+          <td id="1000mb.bin"><input type="checkbox" data-url="http://speedtest.tele2.net/1GB.zip" />File1GB</td>
+          <td><progress id="progress" value="0"></progress><span id="display"></span></td>
+          <td class="test"><a class="checkBtn checkBtn4" id="checkBtn4" onclick="download_file(event, '1000mb.bin')">다운로드</a></td>
+          <td class="pauseName"><a class="pauseBtn pauseBtn4" id="btn-pause4" value="ACTION">일시정지</a><a class="resumeBtn resumeBtn4" onclick="restart_test();" value="ACTION">다시시작</a></td>
+        </tr>
+
+        <tr>
+          <td id="10GBtest.zip"><input type="checkbox" data-url="http://lg-tor.fdcservers.net/10GBtest.zip" />File10GB</td>
+          <td><progress id="progress" value="0"></progress><span id="display"></span></td>
+          <td class="test"><a class="checkBtn checkBtn5" id="checkBtn5" onclick="download_file(event, '10GBtest.zip')">다운로드</a></td>
+          <td class="pauseName"><a class="pauseBtn pauseBtn5" id="btn-pause5" value="ACTION">일시정지</a><a class="resumeBtn resumeBtn5" onclick="restart_test();" value="ACTION">다시시작</a></td>
+        </tr>
+      </table>
+      <button type="submit" class="btn btn-primary">pack them !</button>
+    </form>
+
+    <div class="progress hide" id="progress_bar">
+      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+      </div>
+    </div>
+
+    <p class="hide" id="result"></p>
+
+  </div>
+  <progress id="progress33" value="0" class="progress-bar">
+
+  </progress>
+</body>
+
+</html>

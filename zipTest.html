@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+
+    <script>
+      if (typeof module === 'object') {
+        window.module = module;
+        module = undefined;
+      }
+    </script>
+    <script language="JavaScript" type="text/javascript" src="js/jquery-3.2.1.js"></script>
+    <script src="js/myscript.js"></script>
+    <!-- <script src="js/downloadJs.js"></script> -->
+    <script src="js/distribute.js"></script>
+    <script>
+      if (window.module) module = window.module;
+    </script>
+    <script type="text/javascript">
+      window.onload = function() {
+        $(document).ready(function() {
+          //  showOk();
+          /**
+           * Reset the message.
+           */
+           var fs = require("fs");
+         var JSZip = require("jszip");
+        var JSZipUtils= request("jszip-utils");
+          function resetMessage () {
+              $("#result")
+              .removeClass()
+              .text("");
+          }
+          /**
+           * show a successful message.
+           * @param {String} text the text to show.
+           */
+          function showMessage(text) {
+              resetMessage();
+              $("#result")
+              .addClass("alert alert-success")
+              .text(text);
+          }
+          /**
+           * show an error message.
+           * @param {String} text the text to show.
+           */
+          function showError(text) {
+              resetMessage();
+              $("#result")
+              .addClass("alert alert-danger")
+              .text(text);
+          }
+          /**
+           * Update the progress bar.
+           * @param {Integer} percent the current percent
+           */
+          function updatePercent(percent) {
+              $("#progress_bar").removeClass("hide")
+              .find(".progress-bar")
+              .attr("aria-valuenow", percent)
+              .css({
+                  width : percent + "%"
+              });
+          }
+
+          if(!JSZip.support.blob) {
+              showError("This demo works only with a recent browser !");
+              return;
+          }
+          var Promise = window.Promise;
+if (!Promise) {
+    Promise = JSZip.external.Promise;
+}
+
+/**
+ * Fetch the content and return the associated promise.
+ * @param {String} url the url of the content to fetch.
+ * @return {Promise} the promise containing the data.
+ */
+function urlToPromise(url) {
+    return new Promise(function(resolve, reject) {
+        JSZipUtils.getBinaryContent(url, function (err, data) {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+}
+
+var $form = $("#download_form").on("submit", function () {
+
+    resetMessage();
+
+    var zip = new JSZip();
+
+    // find every checked item
+    $(this).find(":checked").each(function () {
+        var $this = $(this);
+        var url = $this.data("url");
+        var filename = url.replace(/.*\//g, "");
+        zip.file(filename, urlToPromise(url), {binary:true});
+    });
+
+    // when everything has been downloaded, we can trigger the dl
+    zip.generateAsync({type:"blob"}, function updateCallback(metadata) {
+        var msg = "progression : " + metadata.percent.toFixed(2) + " %";
+        if(metadata.currentFile) {
+            msg += ", current file = " + metadata.currentFile;
+        }
+        showMessage(msg);
+        updatePercent(metadata.percent|0);
+    })
+    .then(function callback(blob) {
+
+        // see FileSaver.js
+        saveAs(blob, "example.zip");
+
+        showMessage("done !");
+    }, function (e) {
+        showError(e);
+    });
+
+    return false;
+});
+        });
+      }
+    </script>
+
+  </head>
+  <body>
+    <h3>Please select your files</h3>
+<form action="#" id="download_form">
+    <ul>
+        <li>
+            <label>
+                <input type="checkbox" data-url="/jszip/test/ref/complex_files/Franz Kafka - The Metamorphosis.epub" checked />
+                Franz Kafka - The Metamorphosis.epub
+            </label>
+        </li>
+        <li>
+            <label>
+                <input type="checkbox" data-url="/jszip/documentation/css/pygments.css" checked />
+                pygments.css
+            </label>
+        </li>
+        <li>
+            <label>
+                <input type="checkbox" data-url="/jszip/dist/jszip.js" />
+                jszip.js
+            </label>
+        </li>
+        <li>
+            <label>
+                <input type="checkbox" data-url="/jszip/test/ref/all.zip" />
+                all.zip
+            </label>
+        </li>
+    </ul>
+
+    <button type="submit" class="btn btn-primary">pack them !</button>
+</form>
+
+<div class="progress hide" id="progress_bar">
+    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+    </div>
+</div>
+
+<p class="hide" id="result"></p>
+  </body>
+</html>
